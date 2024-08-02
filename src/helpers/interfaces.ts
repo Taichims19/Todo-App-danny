@@ -5,6 +5,7 @@ export interface Todo {
   description: string;
   done: boolean;
   createdAt: Date;
+  updatedAt?: Date; // Opcional: fecha de la última actualización
 }
 
 export type TodoAction =

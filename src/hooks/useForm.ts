@@ -29,7 +29,7 @@ type UseFormReturn<T> = {
 
 export const useForm = <T extends FormState<T>>(
   initialForm: T,
-  formValidations: FormValidations<T>
+  formValidations: FormValidations<T> = {} // Proporciona un valor predeterminado vacío
 ): UseFormReturn<T> => {
   const [formState, setFormState] = useState<T>(initialForm);
   const [formErrors, setFormErrors] = useState<FormErrors<T>>({});

@@ -20,7 +20,7 @@ export const NavBar = () => {
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const { addNote, filter, setFilter } = useContext(NotesContext);
-  const { logout } = useContext(AuthContext);
+  const { logout, displayName } = useContext(AuthContext);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -68,6 +68,20 @@ export const NavBar = () => {
           >
             TODO LIST
           </Typography>
+
+          {/* Muestra el nombre del usuario aquí */}
+          {displayName && (
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{
+                marginLeft: 2,
+                color: "rgb(101, 103, 128)",
+              }}
+            >
+              Hola: {displayName}
+            </Typography>
+          )}
 
           <IconButton
             color="error"

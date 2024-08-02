@@ -1,5 +1,12 @@
-import React, { useState, createContext, ReactNode, useEffect } from "react";
+import React, {
+  useState,
+  createContext,
+  ReactNode,
+  useEffect,
+  useContext,
+} from "react";
 import { Todo, NotesContextValue } from "../helpers/interfaces";
+import { AuthContext } from "./AuthContext";
 
 const defaultNotesContextValue: NotesContextValue = {
   notes: [],
@@ -15,16 +22,21 @@ export const NotesContext = createContext<NotesContextValue>(
 );
 
 export const NotesProvider = ({ children }: { children: ReactNode }) => {
+  const { userEmail } = useContext(AuthContext);
+
   const [notes, setNotes] = useState<Todo[]>(() => {
-    const localData = localStorage.getItem("notes");
+    if (!userEmail) return [];
+    const localData = localStorage.getItem(`notes_${userEmail}`);
     return localData ? JSON.parse(localData) : [];
   });
 
   const [filter, setFilter] = useState<string>("All"); // Estado para el filtro
 
   useEffect(() => {
-    localStorage.setItem("notes", JSON.stringify(notes));
-  }, [notes]);
+    if (userEmail) {
+      localStorage.setItem(`notes_${userEmail}`, JSON.stringify(notes));
+    }
+  }, [notes, userEmail]);
 
   const addNote = (newNote: Todo) => {
     setNotes((prevNotes) => [...prevNotes, newNote]);
@@ -32,7 +44,11 @@ export const NotesProvider = ({ children }: { children: ReactNode }) => {
 
   const editNote = (id: number, updatedNote: Todo) => {
     setNotes((prevNotes) =>
-      prevNotes.map((note) => (note.id === id ? updatedNote : note))
+      prevNotes.map((note) =>
+        note.id === id
+          ? { ...updatedNote, updatedAt: new Date() } // Actualiza la fecha de modificación
+          : note
+      )
     );
   };
 

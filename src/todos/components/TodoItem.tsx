@@ -21,14 +21,17 @@ interface TodoItemProps {
 
 export const TodoItem: React.FC<TodoItemProps> = ({ todo }) => {
   const { deleteNote, editNote } = useContext(NotesContext);
+  const [newTitle, setNewTitle] = useState(todo.title); // Nuevo estado para el título
   const [newDescription, setNewDescription] = useState(todo.description);
   const [open, setOpen] = useState(false);
 
   const handleSave = () => {
     editNote(todo.id, {
       ...todo,
+      title: newTitle, // Actualiza el título
       description: newDescription,
-      createdAt: todo.createdAt, // Asegúrate de que la fecha se mantenga
+      createdAt: todo.createdAt,
+      updatedAt: new Date(), // Actualiza la fecha de modificación
     });
     setOpen(false);
   };
@@ -139,7 +142,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({ todo }) => {
                   variant="caption"
                   color="textSecondary"
                   fontWeight={900}
-                  sx={{ mt: 1 }} // Espacio arriba de la fecha
+                  sx={{ mt: 1 }}
                 >
                   {new Date(todo.createdAt).toLocaleTimeString("en-US", {
                     hour: "2-digit",
@@ -147,6 +150,22 @@ export const TodoItem: React.FC<TodoItemProps> = ({ todo }) => {
                     hour12: true,
                   })}{" "}
                   {new Date(todo.createdAt).toLocaleDateString()}
+                  {todo.updatedAt && (
+                    <Typography
+                      variant="caption"
+                      color="textSecondary"
+                      fontWeight={700}
+                      sx={{ mt: 1, ml: 1 }}
+                    >
+                      (Actualizado:{" "}
+                      {new Date(todo.updatedAt).toLocaleTimeString("en-US", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true,
+                      })}{" "}
+                      {new Date(todo.updatedAt).toLocaleDateString()})
+                    </Typography>
+                  )}
                 </Typography>
               </>
             }
@@ -167,23 +186,32 @@ export const TodoItem: React.FC<TodoItemProps> = ({ todo }) => {
             left: "50%",
             transform: "translate(-50%, -50%)",
             width: "60%",
-            height: "70%",
+            height: "82%",
             bgcolor: "background.paper",
             boxShadow: 24,
             p: 4,
           }}
         >
           <Typography id="modal-title" variant="h6" component="h2">
-            {todo.title}
+            Editar Nota
           </Typography>
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Título"
+            value={newTitle}
+            onChange={(e) => setNewTitle(e.target.value)}
+            sx={{ background: "rgba(107, 110, 242, 0.5)" }}
+          />
           <TextField
             fullWidth
             multiline
             rows={12}
             margin="normal"
+            label="Descripción"
             value={newDescription}
             onChange={(e) => setNewDescription(e.target.value)}
-            onBlur={handleSave}
+            sx={{ background: "rgba(107, 110, 242, 0.5)" }}
           />
           <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
             <Button variant="contained" color="primary" onClick={handleSave}>

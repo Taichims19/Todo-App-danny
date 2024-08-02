@@ -8,10 +8,13 @@ interface TodoAddProps {
 }
 
 export const TodoAdd: React.FC<TodoAddProps> = ({ onNewTodo }) => {
-  const { formState, onInputChange, onResetForm } = useForm({
-    title: "",
-    description: "",
-  });
+  const { formState, onInputChange, onResetForm } = useForm(
+    {
+      title: "",
+      description: "",
+    },
+    {} // Proporciona un objeto vacío como segundo argumento
+  );
 
   const { title, description } = formState;
 

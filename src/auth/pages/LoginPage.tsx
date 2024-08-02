@@ -2,11 +2,11 @@ import React, { useContext, useEffect } from "react";
 import { Grid, Button, Link, TextField, Alert } from "@mui/material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
-import { GoogleLogin } from "@react-oauth/google";
+import GoogleLoginButton from "../../todos/components/GoogleLoginButton";
+
 import { useForm } from "../../hooks/useForm";
-import { AuthLayout } from "../layout/AuthLayout";
 import { findUserByEmail } from "../../hooks/userService";
-import axios from "axios";
+import { AuthLayout } from "../layout/AuthLayout";
 
 const formData = {
   email: "",
@@ -33,24 +33,9 @@ export const LoginPage = () => {
     emailValid,
     passwordValid,
   } = useForm(formData, formValidations);
-  const { isAuthenticated, login, loginWithGoogle } = useContext(AuthContext);
+
+  const { isAuthenticated, login } = useContext(AuthContext);
   const navigate = useNavigate();
-
-  const handleGoogleSuccess = async (credentialResponse: any) => {
-    const token = credentialResponse.credential;
-    try {
-      const response = await axios.post("http://localhost:3001/auth/google", {
-        token,
-      });
-      loginWithGoogle(response.data.token); // Asegúrate de que `response.data.token` es el token correcto
-    } catch (error) {
-      console.error("Error en la autenticación con Google:", error);
-    }
-  };
-
-  const handleGoogleError = (error: any) => {
-    console.error("Error en la autenticación con Google:", error);
-  };
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -64,6 +49,7 @@ export const LoginPage = () => {
 
     // Verificar credenciales
     const user = findUserByEmail(email);
+    console.log("User found:", user); // Agrega esto para verificar el usuario encontrado
     if (user && user.password === password) {
       login(email, password); // Actualiza el estado de autenticación
     } else {
@@ -116,11 +102,7 @@ export const LoginPage = () => {
               Crear una cuenta
             </Link>
           </Grid>
-          <GoogleLogin
-            onSuccess={handleGoogleSuccess}
-            onError={handleGoogleError}
-            useOneTap
-          />
+          <GoogleLoginButton />
         </Grid>
       </form>
     </AuthLayout>
