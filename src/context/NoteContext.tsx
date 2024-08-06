@@ -1,59 +1,85 @@
 import React, {
-  useState,
   createContext,
   ReactNode,
+  useReducer,
   useEffect,
   useContext,
+  useState,
 } from "react";
 import { Todo, NotesContextValue } from "../helpers/interfaces";
-import { AuthContext } from "./AuthContext";
+import { useAuthContext } from "./AuthContext";
+import { todoReducer } from "../reducers/todoReducer";
 
 const defaultNotesContextValue: NotesContextValue = {
   notes: [],
   addNote: () => {},
   editNote: () => {},
   deleteNote: () => {},
-  filter: "All", // Nuevo estado de filtro
-  setFilter: () => {}, // Función para actualizar el filtro
+  filter: "All",
+  setFilter: () => {},
 };
 
 export const NotesContext = createContext<NotesContextValue>(
   defaultNotesContextValue
 );
 
+const init = (initialNotes: Todo[], userEmail: string | null) => {
+  if (userEmail) {
+    const savedNotes = localStorage.getItem(`notes_${userEmail}`);
+    return savedNotes ? JSON.parse(savedNotes) : initialNotes;
+  }
+  return initialNotes;
+};
+
 export const NotesProvider = ({ children }: { children: ReactNode }) => {
-  const { userEmail } = useContext(AuthContext);
+  const { state } = useAuthContext();
+  const [notes, dispatch] = useReducer(
+    (state: Todo[], action: any) => todoReducer(state, action),
+    [],
+    (initialNotes) => init(initialNotes, state.userEmail)
+  );
 
-  const [notes, setNotes] = useState<Todo[]>(() => {
-    if (!userEmail) return [];
-    const localData = localStorage.getItem(`notes_${userEmail}`);
-    return localData ? JSON.parse(localData) : [];
-  });
-
-  const [filter, setFilter] = useState<string>("All"); // Estado para el filtro
+  const [filter, setFilter] = useState<string>("All");
 
   useEffect(() => {
-    if (userEmail) {
-      localStorage.setItem(`notes_${userEmail}`, JSON.stringify(notes));
+    if (state.userEmail) {
+      const savedNotes = localStorage.getItem(`notes_${state.userEmail}`);
+      if (savedNotes) {
+        dispatch({ type: "[TODO] Set Todos", payload: JSON.parse(savedNotes) });
+      } else {
+        dispatch({ type: "[TODO] Set Todos", payload: [] });
+      }
     }
-  }, [notes, userEmail]);
+  }, [state.userEmail]);
+
+  useEffect(() => {
+    if (state.userEmail) {
+      localStorage.setItem(`notes_${state.userEmail}`, JSON.stringify(notes));
+    }
+  }, [notes, state.userEmail]);
 
   const addNote = (newNote: Todo) => {
-    setNotes((prevNotes) => [...prevNotes, newNote]);
+    if (!state.userEmail) return;
+    dispatch({
+      type: "[TODO] Add Todo",
+      payload: newNote,
+    });
   };
 
-  const editNote = (id: number, updatedNote: Todo) => {
-    setNotes((prevNotes) =>
-      prevNotes.map((note) =>
-        note.id === id
-          ? { ...updatedNote, updatedAt: new Date() } // Actualiza la fecha de modificación
-          : note
-      )
-    );
+  const editNote = (id: number, updatedNote: Partial<Todo>) => {
+    if (!state.userEmail) return;
+    dispatch({
+      type: "[TODO] Edit Todo",
+      payload: { id, updatedNote },
+    });
   };
 
   const deleteNote = (id: number) => {
-    setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
+    if (!state.userEmail) return;
+    dispatch({
+      type: "[TODO] Remove Todo",
+      payload: id,
+    });
   };
 
   const filteredNotes = filter === "All" ? notes : notes.slice(-1); // Aquí puedes ajustar para mostrar una sola nota específica
@@ -73,3 +99,5 @@ export const NotesProvider = ({ children }: { children: ReactNode }) => {
     </NotesContext.Provider>
   );
 };
+
+export const useNotesContext = () => useContext(NotesContext);

@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { TodoAdd } from "./TodoAdd";
 import { NotesContext } from "../../context/NoteContext";
-import { AuthContext } from "../../context/AuthContext";
+import { useAuthContext } from "../../context/AuthContext";
 import { Todo } from "../../helpers/interfaces";
 import { LogoutOutlined } from "@mui/icons-material";
 
@@ -20,7 +20,7 @@ export const NavBar = () => {
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const { addNote, filter, setFilter } = useContext(NotesContext);
-  const { logout, displayName } = useContext(AuthContext);
+  const { state, logout } = useAuthContext();
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -70,7 +70,7 @@ export const NavBar = () => {
           </Typography>
 
           {/* Muestra el nombre del usuario aquí */}
-          {displayName && (
+          {state.displayName && (
             <Typography
               variant="h6"
               component="div"
@@ -79,7 +79,7 @@ export const NavBar = () => {
                 color: "rgb(101, 103, 128)",
               }}
             >
-              Hola: {displayName}
+              {state.displayName}
             </Typography>
           )}
 
@@ -87,7 +87,7 @@ export const NavBar = () => {
             color="error"
             sx={{
               position: "relative",
-              left: "100%",
+              left: "40%",
 
               "&:hover": {
                 bgcolor: "rgba(0, 0, 0, 0.2)",

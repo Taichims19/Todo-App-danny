@@ -1,11 +1,10 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Grid, Button, Link, TextField, Alert } from "@mui/material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext";
+import { useAuthContext } from "../../context/AuthContext";
 import GoogleLoginButton from "../../todos/components/GoogleLoginButton";
 
 import { useForm } from "../../hooks/useForm";
-import { findUserByEmail } from "../../hooks/userService";
 import { AuthLayout } from "../layout/AuthLayout";
 
 const formData = {
@@ -34,27 +33,21 @@ export const LoginPage = () => {
     passwordValid,
   } = useForm(formData, formValidations);
 
-  const { isAuthenticated, login } = useContext(AuthContext);
+  const { state, login } = useAuthContext();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (state.isAuthenticated) {
       navigate("/");
     }
-  }, [isAuthenticated, navigate]);
+  }, [state.isAuthenticated, navigate]);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+
     if (!isFormValid) return;
 
-    // Verificar credenciales
-    const user = findUserByEmail(email);
-    console.log("User found:", user); // Agrega esto para verificar el usuario encontrado
-    if (user && user.password === password) {
-      login(email, password); // Actualiza el estado de autenticación
-    } else {
-      console.error("Credenciales incorrectas");
-    }
+    login(email, password);
   };
 
   return (

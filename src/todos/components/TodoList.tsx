@@ -1,10 +1,10 @@
-import React, { useContext } from "react";
-import { List, ListItem, ListItemText } from "@mui/material";
-import { NotesContext } from "../../context/NoteContext"; // Asegúrate de la ruta correcta
+import React from "react";
+import { List } from "@mui/material";
+import { useNotesContext } from "../../context/NoteContext"; // Asegúrate de la ruta correcta
 import { TodoItem } from "./TodoItem";
 
 export const TodoList: React.FC = () => {
-  const { notes } = useContext(NotesContext); // Obtén solo las notas desde el contexto
+  const { notes } = useNotesContext();
 
   return (
     <List

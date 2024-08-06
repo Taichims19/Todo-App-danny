@@ -1,14 +1,5 @@
 // src/todos/components/todoReducer.ts
-import { Todo, TodoState } from "../../helpers/interfaces";
-
-type TodoAction =
-  | { type: "[TODO] Add Todo"; payload: Todo }
-  | { type: "[TODO] Remove Todo"; payload: number }
-  | { type: "[TODO] Toggle Todo"; payload: number }
-  | {
-      type: "[TODO] Edit Todo";
-      payload: { id: number; newDescription: string };
-    };
+import { TodoState, TodoAction } from "../helpers/interfaces";
 
 export const todoReducer = (
   initialState: TodoState = [],
@@ -39,12 +30,14 @@ export const todoReducer = (
         if (todo.id === action.payload.id) {
           return {
             ...todo,
-            description: action.payload.newDescription,
-            createdAt: new Date(todo.createdAt), // Asegúrate de que la fecha se mantenga
+            ...action.payload.updatedNote, // Actualización correcta
           };
         }
         return todo;
       });
+
+    case "[TODO] Set Todos":
+      return action.payload; // Manejo de la nueva acción
 
     default:
       return initialState;

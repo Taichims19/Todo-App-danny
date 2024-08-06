@@ -1,5 +1,5 @@
 import { useEffect, useReducer } from "react";
-import { todoReducer } from "../todos/components/todoReducer";
+import { todoReducer } from "../reducers/todoReducer";
 import { Todo, TodoAction, TodoState } from "../helpers/interfaces";
 import { useDebounce } from "./useDebounce";
 
@@ -30,7 +30,7 @@ export const useTodos = () => {
   // Y en el useEffect para guardar en localStorage:
   useEffect(() => {
     if (debouncedTodos) {
-      const todosToStore = debouncedTodos.map((todo) => ({
+      const todosToStore = debouncedTodos.map((todo: any) => ({
         ...todo,
         createdAt: todo.createdAt.toISOString(), // Convierte a ISOString antes de guardar
       }));

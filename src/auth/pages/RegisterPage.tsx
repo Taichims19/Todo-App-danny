@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import {
   Grid,
   Button,
@@ -7,10 +7,10 @@ import {
   Alert,
   Typography,
 } from "@mui/material";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext";
+import { Link as RouterLink } from "react-router-dom";
+import { useAuthContext } from "../../context/AuthContext";
 import { useForm } from "../../hooks/useForm";
-import { saveUser } from "../../hooks/userService";
+
 import { AuthLayout } from "../layout/AuthLayout";
 
 const initialForm = {
@@ -36,8 +36,8 @@ const formValidations = {
 
 export const RegisterPage = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
-  const navigate = useNavigate();
-  const { register } = useContext(AuthContext);
+
+  const { register } = useAuthContext(); // Solo necesitas `register`
 
   const {
     displayName,
@@ -56,13 +56,8 @@ export const RegisterPage = () => {
 
     if (!isFormValid) return;
 
-    // Guardar el usuario usando userService
-    const user = { email, password, displayName };
-    saveUser(user);
-
-    // Registrar el usuario en el AuthContext
+    // Usar la función `register` del AuthContext
     register(email, password, displayName);
-    navigate("/");
   };
 
   return (

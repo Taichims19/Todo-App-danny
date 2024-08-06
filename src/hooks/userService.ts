@@ -26,7 +26,6 @@ export const saveUser = (user: User): void => {
     JSON.parse(localStorage.getItem("users") || "[]")
   );
 };
-
 // const users = JSON.parse(localStorage.getItem("users") || "[]");
 // const uniqueUsers = Array.from(new Map(users.map(user => [user.email, user])).values());
 // localStorage.setItem("users", JSON.stringify(uniqueUsers));

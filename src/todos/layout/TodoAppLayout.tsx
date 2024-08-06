@@ -2,13 +2,11 @@ import React from "react";
 import { Grid } from "@mui/material";
 import { NavBar } from "../components/NavBar";
 import { TodoApp } from "../components/TodoApp";
-import { NotesProvider } from "../../context/NoteContext";
-import { AuthProvider } from "../../context/AuthContext";
 
 export const TodoAppLayout = () => {
   return (
-    <AuthProvider>
-      <NotesProvider>
+    <>
+      <>
         <Grid
           container
           sx={{
@@ -38,7 +36,7 @@ export const TodoAppLayout = () => {
             <TodoApp />
           </Grid>
         </Grid>
-      </NotesProvider>
-    </AuthProvider>
+      </>
+    </>
   );
 };

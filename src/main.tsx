@@ -4,6 +4,8 @@ import "./styles.css";
 import { TodoApp } from "./TodoApp";
 import { BrowserRouter } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { AuthProvider } from "./context/AuthContext";
+import { NotesProvider } from "./context/NoteContext";
 
 const clientId =
   "57099475778-uofde3chgs8sk25s7vnvb01p57u5kav1.apps.googleusercontent.com";
@@ -28,7 +30,11 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <GoogleOAuthProvider clientId={clientId}>
       <BrowserRouter>
-        <TodoApp />
+        <AuthProvider>
+          <NotesProvider>
+            <TodoApp />
+          </NotesProvider>
+        </AuthProvider>
       </BrowserRouter>
     </GoogleOAuthProvider>
   </React.StrictMode>
