@@ -1,11 +1,19 @@
 import React, { useEffect } from "react";
-import { Grid, Button, Link, TextField, Alert } from "@mui/material";
+import {
+  Grid,
+  Button,
+  Link,
+  TextField,
+  Alert,
+  Box,
+  Typography,
+} from "@mui/material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../context/AuthContext";
-import GoogleLoginButton from "../../todos/components/GoogleLoginButton";
 
 import { useForm } from "../../hooks/useForm";
 import { AuthLayout } from "../layout/AuthLayout";
+import GoogleLoginButton from "../../todos/components/GoogleLoginButton";
 
 const formData = {
   email: "",
@@ -33,7 +41,7 @@ export const LoginPage = () => {
     passwordValid,
   } = useForm(formData, formValidations);
 
-  const { state, login } = useAuthContext();
+  const { state, login, error } = useAuthContext();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -51,53 +59,153 @@ export const LoginPage = () => {
   };
 
   return (
-    <AuthLayout title="Login">
-      <form
-        onSubmit={handleSubmit}
-        className="animate__animated animate__fadeIn animate__faster"
+    <AuthLayout title="">
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "100vh",
+          backgroundColor: "#f5f5f5",
+          padding: "20px",
+          background: "rgb(50, 130, 181)",
+          borderRadius: 3,
+        }}
       >
-        <Grid container>
-          <Grid item xs={12} md={6} sx={{ mt: 2 }}>
-            <TextField
-              label="Correo"
-              type="email"
-              placeholder="correo@gmail.com"
-              fullWidth
-              name="email"
-              value={email}
-              onChange={onInputChange}
-              error={!!emailValid}
-              helperText={emailValid}
-            />
-          </Grid>
-          <Grid item xs={12} md={6} sx={{ mt: 2 }}>
-            <TextField
-              label="Contraseña"
-              type="password"
-              placeholder="contraseña"
-              fullWidth
-              name="password"
-              value={password}
-              onChange={onInputChange}
-              error={!!passwordValid}
-              helperText={passwordValid}
-            />
-          </Grid>
-          <Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
-            <Grid item xs={12} sm={6}>
-              <Button type="submit" variant="contained" fullWidth>
-                Login
-              </Button>
+        <Box
+          sx={{
+            width: "100%",
+            maxWidth: "400px",
+            padding: "20px",
+            backgroundColor: "white",
+            boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+            borderRadius: "8px",
+          }}
+        >
+          <Typography variant="h4" component="h1" gutterBottom align="center">
+            Bienvenido
+          </Typography>
+          <form onSubmit={handleSubmit}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  label="Correo"
+                  type="email"
+                  placeholder="correo@gmail.com"
+                  fullWidth
+                  name="email"
+                  value={email}
+                  onChange={onInputChange}
+                  error={!!emailValid}
+                  helperText={emailValid}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": {
+                        borderColor: emailValid
+                          ? "rgba(122, 49, 240, 0.5)"
+                          : "",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "rgba(122, 49, 240, 0.7)",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "rgba(122, 49, 240, 0.9)",
+                      },
+                    },
+                  }}
+                  FormHelperTextProps={{
+                    style: {
+                      fontSize: "14px",
+                      color: passwordValid ? "rgb(14, 76, 117)" : "",
+                    },
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Contraseña"
+                  type="password"
+                  placeholder="contraseña"
+                  fullWidth
+                  name="password"
+                  value={password}
+                  onChange={onInputChange}
+                  error={!!passwordValid}
+                  helperText={passwordValid}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": {
+                        borderColor: emailValid
+                          ? "rgba(122, 49, 240, 0.5)"
+                          : "",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "rgba(122, 49, 240, 0.7)",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "rgba(122, 49, 240, 0.9)",
+                      },
+                    },
+                  }}
+                  FormHelperTextProps={{
+                    style: {
+                      fontSize: "14px",
+                      color: passwordValid ? "rgb(14, 76, 117)" : "",
+                    },
+                  }}
+                  // FormHelperTextProps={{
+                  //   style: {
+                  //     fontSize: "14px",
+                  //     color: passwordValid ? "rgba(122, 49, 240, 0.5)" : "",
+                  //   },
+                  // }}
+                />
+              </Grid>
+              {error && (
+                <Grid item xs={12}>
+                  <Alert severity="error">{error}</Alert>
+                </Grid>
+              )}
+              <Grid item xs={6}>
+                <Button
+                  type="submit"
+                  sx={{
+                    background: "rgba(122, 49, 240, 0.8)",
+                    width: "50%",
+                    height: "38px",
+                    position: "relative",
+                    left: "1%",
+                    "&:hover": {
+                      background: "rgba(122, 49, 240, 0.6)", // Color de fondo más opaco al pasar el mouse
+                    },
+                  }}
+                  variant="contained"
+                  fullWidth
+                >
+                  Login
+                </Button>
+              </Grid>
+              <Grid item xs={6} sx={{ textAlign: "center" }}>
+                <GoogleLoginButton />
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                sx={{ textAlign: "center", marginTop: "10px" }}
+              >
+                <Link
+                  component={RouterLink}
+                  color="inherit"
+                  to="/auth/register"
+                >
+                  Crear una cuenta
+                </Link>
+              </Grid>
             </Grid>
-          </Grid>
-          <Grid container direction="row" justifyContent="end">
-            <Link component={RouterLink} color="inherit" to="/auth/register">
-              Crear una cuenta
-            </Link>
-          </Grid>
-          <GoogleLoginButton />
-        </Grid>
-      </form>
+          </form>
+        </Box>
+      </Box>
     </AuthLayout>
   );
 };

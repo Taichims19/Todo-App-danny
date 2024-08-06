@@ -41,7 +41,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({ todo }) => {
 
   return (
     <>
-      <Box sx={{ marginBottom: "16px" }}>
+      <Box sx={{ marginBottom: "18px" }}>
         <ListItem
           sx={{
             background: "white",

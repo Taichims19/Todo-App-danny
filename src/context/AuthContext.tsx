@@ -4,6 +4,7 @@ import React, {
   useContext,
   useEffect,
   useReducer,
+  useState,
 } from "react";
 import { useNavigate } from "react-router-dom";
 import { googleLogout } from "@react-oauth/google";
@@ -52,6 +53,7 @@ export const AuthContext = createContext<{
   register: (email: string, password: string, displayName: string) => void;
   loginWithGoogle: (token: string) => void;
   logout: () => void;
+  error: string | null;
 }>({
   state: initialState,
   dispatch: () => {},
@@ -59,10 +61,12 @@ export const AuthContext = createContext<{
   register: () => {},
   loginWithGoogle: () => {},
   logout: () => {},
+  error: null,
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -93,8 +97,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         type: "LOGIN",
         payload: { email: user.email, displayName: user.displayName },
       });
+      setError(null);
       navigate("/");
     } else {
+      setError("Credenciales incorrectas");
       console.error("Credenciales incorrectas");
     }
   };
@@ -106,6 +112,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       type: "LOGIN",
       payload: { email, displayName },
     });
+    setError(null);
     navigate("/");
   };
 
@@ -130,13 +137,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = () => {
     dispatch({ type: "LOGOUT" });
+    setError(null);
     navigate("/auth/login");
     googleLogout();
   };
 
   return (
     <AuthContext.Provider
-      value={{ state, dispatch, login, register, loginWithGoogle, logout }}
+      value={{
+        state,
+        dispatch,
+        login,
+        register,
+        loginWithGoogle,
+        logout,
+        error,
+      }}
     >
       {children}
     </AuthContext.Provider>

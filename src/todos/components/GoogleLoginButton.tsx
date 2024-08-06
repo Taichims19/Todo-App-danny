@@ -1,26 +1,44 @@
 import React from "react";
-import { GoogleLogin } from "@react-oauth/google";
+import { useGoogleLogin } from "@react-oauth/google";
+import { Button } from "@mui/material";
 import { useAuthContext } from "../../context/AuthContext";
 
 const GoogleLoginButton = () => {
   const { loginWithGoogle } = useAuthContext();
 
-  const handleLoginSuccess = (credentialResponse: any) => {
-    console.log("Credential Response:", credentialResponse); // Verifica la respuesta aquí
-    const token = credentialResponse.credential;
-    if (token) {
-      loginWithGoogle(token);
-    } else {
-      console.error("No se pudo obtener el token");
-    }
-  };
-
-  const handleLoginError = (error: any) => {
-    console.error("Error en la autenticación con Google:", error);
-  };
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: (tokenResponse) => loginWithGoogle(tokenResponse.access_token),
+    onError: () => console.error("Login Failed"),
+  });
 
   return (
-    <GoogleLogin onSuccess={handleLoginSuccess} onError={handleLoginError} />
+    <Button
+      onClick={() => handleGoogleLogin()}
+      variant="contained"
+      fullWidth
+      style={{
+        position: "relative",
+        right: "50%",
+        width: "150%",
+        height: "38px",
+        backgroundColor: "#4285F4",
+        color: "white",
+        textTransform: "none",
+        padding: "10px 0",
+        fontSize: "17px",
+        fontWeight: "700",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <img
+        src="https://developers.google.com/identity/images/g-logo.png"
+        alt="Google Logo"
+        style={{ marginRight: "10px", width: "25px", height: "25px" }}
+      />
+      Acceder con Google
+    </Button>
   );
 };
 
