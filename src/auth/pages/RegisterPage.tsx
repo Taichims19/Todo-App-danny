@@ -69,7 +69,7 @@ export const RegisterPage = () => {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          minHeight: "100vh",
+          minHeight: "90vh",
           backgroundColor: "#f5f5f5",
           padding: "20px",
           background: "rgb(50, 130, 181)",
